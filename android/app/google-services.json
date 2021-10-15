@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "317797931762",
+    "firebase_url": "https://test-a89cb-default-rtdb.firebaseio.com",
+    "project_id": "test-a89cb",
+    "storage_bucket": "test-a89cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317797931762:android:f29f7ba4fdb4090ef88e6b",
+        "android_client_info": {
+          "package_name": "com.example.airindia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317797931762-oi57265f8qbh8ck8e8adg2ej579l3s9r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSxI5jUJC6_9Z7nl3ygp4ZLdiLeoqVoDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "317797931762-oi57265f8qbh8ck8e8adg2ej579l3s9r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
