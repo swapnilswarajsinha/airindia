@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:airindia/helper/constants.dart';
 import 'package:airindia/services/database.dart';
 import 'package:airindia/widget/widget.dart';
@@ -7,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
   final String chatRoomId;
+  String userName;
 
-  Chat({this.chatRoomId});
+  Chat({this.chatRoomId, this.userName});
 
   @override
   _ChatState createState() => _ChatState();
@@ -66,7 +66,13 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: AppBar(
+        title: Text(
+          widget.userName,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+        ),
+        backgroundColor: Colors.redAccent,
+      ),
       body: Container(
         color: Colors.black12,
         child: Stack(

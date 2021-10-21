@@ -2,6 +2,8 @@ import 'package:airindia/helper/constants.dart';
 import 'package:airindia/models/user.dart';
 import 'package:airindia/services/database.dart';
 import 'package:airindia/views/chat.dart';
+import 'package:airindia/views/chatrooms.dart';
+import 'package:airindia/views/requests.dart';
 import 'package:airindia/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ class _SearchState extends State<Search> {
 
   bool isLoading = false;
   bool haveUserSearched = false;
+  bool toogleRequest = false;
 
   initiateSearch() async {
     if (searchEditingController.text.isNotEmpty) {
@@ -46,34 +49,53 @@ class _SearchState extends State<Search> {
               return userTile(
                 searchResultSnapshot.documents[index].data["userName"],
                 searchResultSnapshot.documents[index].data["userEmail"],
+                searchResultSnapshot.documents[index].data["designation"],
+                searchResultSnapshot.documents[index].data["companyName"],
               );
             })
         : Container();
   }
 
-  sendMessage(String userName) {
+  // sendMessage(String userName) {
+  //   List<String> users = [Constants.myName, userName];
+
+  //   String chatRoomId = getChatRoomId(Constants.myName, userName);
+
+  //   Map<String, dynamic> chatRoom = {
+  //     "users": users,
+  //     "chatRoomId": chatRoomId,
+  //     "connected": false,
+  //   };
+
+  //   databaseMethods.addChatRoom(chatRoom, chatRoomId);
+
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => Chat(
+  //                 chatRoomId: chatRoomId,
+  //                 userName: userName,
+  //               )));
+  // }
+
+  sendRequest(String userName) {
     List<String> users = [Constants.myName, userName];
 
-    String chatRoomId = getChatRoomId(Constants.myName, userName);
+    String requestId = getChatRoomId(Constants.myName, userName);
 
-    Map<String, dynamic> chatRoom = {
+    Map<String, dynamic> request = {
       "users": users,
-      "chatRoomId": chatRoomId,
-      // "designation":,
-      // "companyName":,
+      "requestId": requestId,
+      "connected": false,
     };
 
-    databaseMethods.addChatRoom(chatRoom, chatRoomId);
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Chat(
-                  chatRoomId: chatRoomId,
-                )));
+    toogleRequest
+        ? databaseMethods.addChatRoom(request, requestId)
+        : databaseMethods.delRequest(requestId);
   }
 
-  Widget userTile(String userName, String userEmail) {
+  Widget userTile(
+      String userName, String userEmail, String designation, String company) {
     return Card(
       elevation: 10,
       shadowColor: Colors.redAccent,
@@ -92,29 +114,47 @@ class _SearchState extends State<Search> {
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  userEmail,
+                  designation + " , " + company,
                   style: TextStyle(color: Colors.black, fontSize: 15),
-                )
+                ),
               ],
             ),
             Spacer(),
             GestureDetector(
               onTap: () {
-                sendMessage(userName);
+                setState(() {
+                  toogleRequest = !toogleRequest;
+                });
+                sendRequest(userName);
+                toogleRequest
+                    ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Request Sent'),
+                        action: SnackBarAction(
+                          label: 'Go to Home',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ))
+                    : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Request Widrawed'),
+                        action: SnackBarAction(
+                          label: 'Go to Home',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ));
               },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(24)),
-                child: Text(
-                  "Message",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+              child: toogleRequest
+                  ? Icon(
+                      Icons.highlight_off_rounded,
+                      color: Colors.red,
+                    )
+                  : Icon(
+                      Icons.person_add_alt_1_rounded,
+                      color: Colors.green,
+                    ),
             )
           ],
         ),
@@ -138,7 +178,15 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: AppBar(
+        title: Text(
+          "Search",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        elevation: 0.0,
+        backgroundColor: Colors.redAccent,
+        centerTitle: false,
+      ),
       body: isLoading
           ? Container(
               child: Center(
@@ -173,25 +221,6 @@ class _SearchState extends State<Search> {
                               initiateSearch();
                             },
                             icon: Icon(Icons.search))
-                        // GestureDetector(
-                        //     onTap: () {
-                        //       initiateSearch();
-                        //     },
-                        //     child: Container(
-                        //       height: 40,
-                        //       width: 40,
-                        //       decoration: BoxDecoration(
-                        //           gradient: LinearGradient(
-                        //               colors: [
-                        //                 const Color(0x36FFFFFF),
-                        //                 const Color(0x0FFFFFFF)
-                        //               ],
-                        //               begin: FractionalOffset.topLeft,
-                        //               end: FractionalOffset.bottomRight),
-                        //           borderRadius: BorderRadius.circular(40)),
-                        //       padding: EdgeInsets.all(12),
-                        //       child: Icon(Icons.search),
-                        //     ))
                       ],
                     ),
                   ),

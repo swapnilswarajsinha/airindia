@@ -34,7 +34,35 @@ class DatabaseMethods {
     });
   }
 
-  getChats(String chatRoomId) async{
+   Future<bool> addRequest(request, requestId) {
+    Firestore.instance
+        .collection("Request")
+        .document(requestId)
+        .setData(request)
+        .catchError((e) {
+      print(e);
+    });
+  }
+  Future<bool> delRequest(requestId) {
+    Firestore.instance
+        .collection("chatRoom")
+        .document(requestId)
+        .delete()
+        .catchError((e) {
+      print(e);
+    });
+  }
+  Future<bool> accRequest(requestId) {
+    Firestore.instance
+        .collection("chatRoom")
+        .document(requestId)
+        .updateData({"connected":true})
+        .catchError((e) {
+      print(e);
+    });
+  }
+
+  getChats(String chatRoomId) async {
     return Firestore.instance
         .collection("chatRoom")
         .document(chatRoomId)
@@ -43,14 +71,14 @@ class DatabaseMethods {
         .snapshots();
   }
 
-
-  Future<void> addMessage(String chatRoomId, chatMessageData){
-
-    Firestore.instance.collection("chatRoom")
+  Future<void> addMessage(String chatRoomId, chatMessageData) {
+    Firestore.instance
+        .collection("chatRoom")
         .document(chatRoomId)
         .collection("chats")
-        .add(chatMessageData).catchError((e){
-          print(e.toString());
+        .add(chatMessageData)
+        .catchError((e) {
+      print(e.toString());
     });
   }
 
@@ -60,5 +88,4 @@ class DatabaseMethods {
         .where('users', arrayContains: itIsMyName)
         .snapshots();
   }
-
 }
