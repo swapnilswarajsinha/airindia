@@ -128,7 +128,7 @@ class ChatRoomsTile extends StatelessWidget {
         isThreeLine: true,
         trailing: Wrap(
           spacing: 10,
-          children: Constants.myName == sendByName
+          children: (Constants.myName == sendByName)
               ? <Widget>[
                   IconButton(
                     onPressed: () {
